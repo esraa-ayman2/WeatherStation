@@ -1,0 +1,126 @@
+<footer class="bg-[#0B1120] border-t border-slate-800/80 text-slate-300 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto space-y-8">
+    <div class="bg-slate-800/30 border border-slate-700/50 rounded-[28px] p-6 sm:p-8 backdrop-blur-md shadow-xl">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <!-- Subscribe Form -->
+        <div class="md:col-span-8">
+          <div class="flex items-center gap-2 text-blue-400 font-bold text-xs uppercase tracking-widest mb-1.5">
+            <i class="fa-solid fa-sparkles text-xs"></i> Telemetry Dispatch
+          </div>
+          <h4 class="text-xl font-bold text-white mb-2 tracking-tight">
+            Subscribe to Daily Meteorological Bulletins
+          </h4>
+          <p class="text-xs text-slate-400 mb-5 max-w-xl leading-relaxed">
+            Get severe storm telemetry alerts, morning temperature briefings, and precipitation radar updates delivered directly to your workstation.
+          </p>
+
+          <div *ngIf="isSubscribed" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm font-semibold max-w-xl">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+              <span>Subscribed: <span class="font-normal text-white">{{ subscribedEmail }}</span> connected to live dispatch.</span>
+            </div>
+            <button
+              (click)="resetSubscribe()"
+              class="text-xs text-slate-400 hover:text-white underline underline-offset-2 transition-colors cursor-pointer"
+            >
+              Change
+            </button>
+          </div>
+
+          <form *ngIf="!isSubscribed" [formGroup]="subscribeForm" (ngSubmit)="handleSubscribe()" class="relative max-w-xl" novalidate>
+            <div
+              class="relative flex items-center rounded-xl bg-slate-900/80 border border-slate-700/80 p-1.5 transition-all shadow-inner"
+              [class.border-rose-500]="emailControl?.invalid && (emailControl?.touched || emailControl?.dirty)"
+              [class.border-emerald-500]="emailControl?.valid && emailControl?.touched"
+            >
+              <div class="pl-3.5 text-slate-400">
+                <i class="fa-regular fa-envelope text-sm"></i>
+              </div>
+              <input
+                id="footer-email-input"
+                type="email"
+                formControlName="email"
+                placeholder="Enter workstation email (e.g. user&#64;domain.com)..."
+                class="w-full px-3 py-2 bg-transparent text-white placeholder-slate-500 focus:outline-none text-xs sm:text-sm font-medium"
+              />
+              <button
+                id="footer-subscribe-btn"
+                type="submit"
+                class="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold text-xs sm:text-sm transition-all duration-200 cursor-pointer shadow-md shadow-blue-900/30 whitespace-nowrap"
+              >
+                Subscribe
+              </button>
+            </div>
+
+            <!-- Email validation errors -->
+            <div *ngIf="emailControl?.invalid && (emailControl?.touched || emailControl?.dirty)" class="mt-2 text-rose-400 text-xs flex items-center gap-1.5 pl-1">
+              <i class="fa-solid fa-circle-exclamation text-xs"></i>
+              <span *ngIf="emailControl?.errors?.['required']">Email address is required to subscribe.</span>
+              <span *ngIf="emailControl?.errors?.['pattern']">Please provide a valid email format (e.g. user&#64;domain.com).</span>
+            </div>
+          </form>
+        </div>
+
+        <!-- Social / Station Links -->
+        <div class="md:col-span-4 flex md:justify-end">
+          <div class="flex flex-col items-start md:items-end gap-3">
+            <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">
+              Weather Station Nodes
+            </span>
+            <div class="flex items-center gap-2">
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub"
+                class="w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-blue-600 hover:text-white text-slate-300 flex items-center justify-center transition-all duration-200 border border-slate-700/60 shadow-sm text-xs font-bold"
+              >
+                <i class="fa-brands fa-github"></i>
+              </a>
+              <a
+                href="https://weatherapi.com"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="WeatherAPI"
+                class="w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-blue-600 hover:text-white text-slate-300 flex items-center justify-center transition-all duration-200 border border-slate-700/60 shadow-sm text-xs font-bold"
+              >
+                API
+              </a>
+              <a
+                href="#network"
+                (click)="$event.preventDefault()"
+                aria-label="Network Status"
+                class="w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-blue-600 hover:text-white text-slate-300 flex items-center justify-center transition-all duration-200 border border-slate-700/60 shadow-sm"
+              >
+                <i class="fa-solid fa-globe"></i>
+              </a>
+              <a
+                href="#security"
+                (click)="$event.preventDefault()"
+                aria-label="Security Protocol"
+                class="w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-blue-600 hover:text-white text-slate-300 flex items-center justify-center transition-all duration-200 border border-slate-700/60 shadow-sm"
+              >
+                <i class="fa-solid fa-shield-halved"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colophon and Copyright -->
+    <div class="pt-2 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 font-medium">
+      <p>
+        WeatherStation • Pure Angular Meteorological Application
+      </p>
+      <div class="flex items-center gap-3 text-slate-400 font-mono">
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          Angular Standalone Architecture
+        </span>
+        <span>•</span>
+        <span>Real-time Telemetry</span>
+      </div>
+    </div>
+  </div>
+</footer>

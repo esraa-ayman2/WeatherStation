@@ -1,0 +1,108 @@
+<div class="min-h-screen flex flex-col bg-[#0B1120] text-slate-100 selection:bg-blue-600 selection:text-white font-['Inter',system-ui,-apple-system,sans-serif]">
+  <!-- Top Navigation Bar Component -->
+  <app-navbar
+    [activeTab]="activeTab"
+    [unit]="unit"
+    (tabChange)="setTab($event)"
+  ></app-navbar>
+
+  <!-- Main Content Areas -->
+  <main class="flex-1">
+    <!-- Page Not Found -->
+    <section *ngIf="isNotFound" class="min-h-[70vh] flex items-center justify-center px-4 pt-28 pb-16">
+      <div class="text-center max-w-lg">
+        <p class="text-sm uppercase tracking-[0.28em] text-sky-300 font-bold mb-4">404 / station offline</p>
+        <h1 class="text-5xl sm:text-7xl font-semibold text-white tracking-tight">Page not found</h1>
+        <p class="mt-4 text-slate-400">The page you requested does not exist. Return to the forecast dashboard.</p>
+        <button (click)="setTab('home')" class="mt-7 inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-sky-500 text-slate-950 font-bold hover:bg-sky-300 transition-colors">
+          <i class="fa-solid fa-arrow-left"></i>
+          Back to forecast
+        </button>
+      </div>
+    </section>
+
+    <!-- Tab 1: Home / Forecast View -->
+    <section *ngIf="!isNotFound && activeTab === 'home'" class="relative min-h-[92vh] hero-weather-bg pt-28 pb-16 flex flex-col justify-between overflow-hidden">
+      <!-- Dark background tint overlay -->
+      <div class="absolute inset-0 bg-[#0B1120]/75 backdrop-blur-[2px] z-0"></div>
+
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="mb-7 max-w-3xl">
+          <p class="text-[11px] uppercase tracking-[0.28em] text-sky-300/80 font-bold mb-2">Live atmospheric dashboard</p>
+          <h1 class="text-3xl sm:text-5xl font-semibold tracking-tight text-white leading-tight">Weather, with a clearer view.</h1>
+          <p class="mt-3 text-sm sm:text-base text-slate-300/80 max-w-xl">Search any city for live conditions, hourly movement, and a seven-day outlook.</p>
+        </div>
+
+        <!-- Search Bar Component with Quick Cities & Geolocation -->
+        <app-search-bar [isLoading]="isLoading"></app-search-bar>
+
+        <!-- Error Feedback Banner -->
+        <div
+          *ngIf="errorMessage"
+          class="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs sm:text-sm flex items-center justify-between backdrop-blur-md"
+        >
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-circle-exclamation text-rose-400"></i>
+            <span>{{ errorMessage }} Live weather data could not be loaded.</span>
+          </div>
+        </div>
+
+        <!-- Main Weather Dashboard Grid -->
+        <div *ngIf="weatherData" class="space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <!-- Hero Today's Weather & Hourly Breakdown (8 Cols) -->
+            <div class="lg:col-span-8 flex">
+              <app-today-forecast
+                [data]="weatherData"
+                [unit]="unit"
+                class="w-full flex"
+              ></app-today-forecast>
+            </div>
+
+            <!-- 7-Day Forecast Sidebar (4 Cols) -->
+            <div class="lg:col-span-4 flex">
+              <app-forecast-list
+                [data]="weatherData"
+                [unit]="unit"
+                class="w-full flex"
+              ></app-forecast-list>
+            </div>
+          </div>
+
+          <!-- Bottom Telemetry Sensors (Humidity, Wind, UV, Visibility) -->
+          <app-weather-telemetry [data]="weatherData"></app-weather-telemetry>
+        </div>
+
+        <!-- Skeleton / Empty State -->
+        <div *ngIf="!weatherData && isLoading" class="py-20 flex flex-col items-center justify-center text-center">
+          <i class="fa-solid fa-circle-notch fa-spin text-4xl text-blue-500 mb-4"></i>
+          <p class="text-slate-300 text-sm font-medium">Connecting to meteorological telemetry nodes...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: News Component -->
+    <app-news
+      *ngIf="!isNotFound && activeTab === 'news'"
+      (backToHome)="setTab('home')"
+    ></app-news>
+
+    <!-- Tab 3: Photos Component -->
+    <app-photos
+      *ngIf="!isNotFound && activeTab === 'photos'"
+      (backToHome)="setTab('home')"
+    ></app-photos>
+
+    <!-- Tab 4: Contact Component -->
+    <app-contact
+      *ngIf="!isNotFound && activeTab === 'contact'"
+      (backToHome)="setTab('home')"
+    ></app-contact>
+  </main>
+
+  <!-- Small Assistant Chatbot Component -->
+  <app-chatbot></app-chatbot>
+
+  <!-- Global Footer Component -->
+  <app-footer></app-footer>
+</div>

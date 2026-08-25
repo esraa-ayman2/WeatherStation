@@ -1,0 +1,75 @@
+<div *ngIf="data && current" class="w-full grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pt-2">
+  <!-- Humidity Card -->
+  <div class="bg-slate-800/30 border border-slate-700/50 rounded-3xl p-5 flex flex-col justify-between shadow-lg backdrop-blur-md hover:border-slate-600/80 transition-all">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+        Humidity
+      </span>
+      <i class="fa-solid fa-droplet text-blue-400 text-sm"></i>
+    </div>
+    <div class="flex justify-between items-end mt-4">
+      <span class="text-2xl sm:text-3xl font-bold font-mono text-white">
+        {{ current.humidity }}%
+      </span>
+      <span class="text-xs font-medium text-blue-400">
+        {{ humidityStatus }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Wind Speed Card -->
+  <div class="bg-slate-800/30 border border-slate-700/50 rounded-3xl p-5 flex flex-col justify-between shadow-lg backdrop-blur-md hover:border-slate-600/80 transition-all">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+        Wind Speed
+      </span>
+      <i class="fa-solid fa-wind text-emerald-400 text-sm"></i>
+    </div>
+    <div class="flex justify-between items-end mt-4">
+      <span class="text-2xl sm:text-3xl font-bold font-mono text-white">
+        {{ current.wind_kph | number:'1.0-0' }}
+        <span class="text-xs font-normal text-slate-400 ml-1">km/h</span>
+      </span>
+      <span class="text-xs font-medium text-slate-300 font-mono">
+        {{ current.wind_dir }}
+      </span>
+    </div>
+  </div>
+
+  <!-- UV Index Card -->
+  <div class="bg-slate-800/30 border border-slate-700/50 rounded-3xl p-5 flex flex-col justify-between shadow-lg backdrop-blur-md hover:border-slate-600/80 transition-all">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+        UV Index
+      </span>
+      <i class="fa-solid fa-sun text-amber-400 text-sm"></i>
+    </div>
+    <div class="flex justify-between items-end mt-4">
+      <span class="text-2xl sm:text-3xl font-bold font-mono text-white">
+        {{ current.uv }}
+      </span>
+      <span [class]="uvColorClass" class="text-xs font-medium">
+        {{ uvRiskLevel }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Visibility Card -->
+  <div class="bg-slate-800/30 border border-slate-700/50 rounded-3xl p-5 flex flex-col justify-between shadow-lg backdrop-blur-md hover:border-slate-600/80 transition-all">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+        Visibility
+      </span>
+      <i class="fa-solid fa-eye text-teal-400 text-sm"></i>
+    </div>
+    <div class="flex justify-between items-end mt-4">
+      <span class="text-2xl sm:text-3xl font-bold font-mono text-white">
+        {{ current.vis_km }}
+        <span class="text-xs font-normal text-slate-400 ml-1">km</span>
+      </span>
+      <span class="text-xs font-medium text-blue-400">
+        {{ visibilityStatus }}
+      </span>
+    </div>
+  </div>
+</div>

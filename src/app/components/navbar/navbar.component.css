@@ -1,0 +1,25 @@
+.nav-tab-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.active-nav-tab {
+  background-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.inactive-nav-tab {
+  color: #94a3b8;
+}
+
+.inactive-nav-tab:hover {
+  color: #ffffff;
+  background-color: rgba(51, 65, 85, 0.4);
+}

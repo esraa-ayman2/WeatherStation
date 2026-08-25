@@ -1,0 +1,295 @@
+<section class="min-h-screen bg-[#0B1120] pt-28 pb-16 text-slate-100">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <div class="flex items-center gap-2 text-blue-400 font-bold text-xs uppercase tracking-widest mb-1.5">
+          <i class="fa-regular fa-envelope"></i> Meteorological Operations
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+          Contact Station Dispatch
+        </h2>
+      </div>
+      <button
+        id="contact-back-button"
+        (click)="onBack()"
+        class="self-start sm:self-auto text-xs font-semibold px-4 py-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 text-slate-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+      >
+        <i class="fa-solid fa-arrow-left text-blue-400"></i>
+        <span>Back to Forecast</span>
+      </button>
+    </div>
+
+    <div class="bg-slate-800/30 rounded-4xl border border-slate-700/50 p-6 sm:p-10 shadow-2xl backdrop-blur-md">
+      <!-- Submission Success Card -->
+      <div *ngIf="isSubmitted && submissionData" class="text-center py-8 animate-in fade-in zoom-in-95 duration-300">
+        <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
+          <i class="fa-solid fa-circle-check text-2xl"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-2">Telemetry Message Transmitted!</h3>
+        <p class="text-slate-300 text-sm max-w-md mx-auto mb-6">
+          Thank you, <span class="font-semibold text-white">{{ submissionData.name }}</span>. Your transmission has been verified and registered by our meteorological dispatch station.
+        </p>
+
+        <!-- Receipt Details -->
+        <div class="bg-slate-900/80 rounded-2xl border border-slate-700/60 p-5 max-w-md mx-auto text-left mb-8 space-y-2.5 text-xs">
+          <div class="flex justify-between items-center text-slate-400 pb-2 border-b border-slate-800">
+            <span>Reference ID:</span>
+            <span class="font-mono font-bold text-blue-400">{{ submissionData.referenceId }}</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-400 pb-2 border-b border-slate-800">
+            <span>Verified Email:</span>
+            <span class="font-semibold text-slate-200">{{ submissionData.email }}</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-400 pb-2 border-b border-slate-800">
+            <span>Subject:</span>
+            <span class="text-slate-200">{{ submissionData.subject }}</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-400">
+            <span>Transmission Time:</span>
+            <span class="font-mono text-slate-300">{{ submissionData.submittedAt }}</span>
+          </div>
+        </div>
+
+        <button
+          id="contact-send-another-button"
+          (click)="resetForm()"
+          class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold text-xs sm:text-sm cursor-pointer shadow-lg shadow-blue-900/30 transition-all"
+        >
+          Transmit Another Message
+        </button>
+      </div>
+
+      <!-- Active Contact Form with Reactive Validation -->
+      <form
+        *ngIf="!isSubmitted"
+        [formGroup]="contactForm"
+        (ngSubmit)="onSubmit()"
+        class="space-y-6"
+        novalidate
+      >
+        <!-- Validation Alert Banner when invalid & attempted submit -->
+        <div
+          *ngIf="contactForm.invalid && (contactForm.touched || contactForm.dirty)"
+          class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-3"
+        >
+          <i class="fa-solid fa-triangle-exclamation text-base shrink-0 text-amber-400"></i>
+          <span>Please correct the highlighted fields before transmitting your report.</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <!-- Name Field -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label for="contact-name" class="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                Full Name <span class="text-rose-400">*</span>
+              </label>
+              <span *ngIf="nameControl?.valid && nameControl?.touched" class="text-emerald-400 text-xs flex items-center gap-1 font-medium">
+                <i class="fa-solid fa-check text-[10px]"></i> Valid
+              </span>
+            </div>
+            <div class="relative">
+              <input
+                id="contact-name"
+                type="text"
+                formControlName="name"
+                placeholder="e.g. Alex Morgan"
+                [class.border-rose-500]="nameControl?.invalid && (nameControl?.dirty || nameControl?.touched)"
+                [class.border-emerald-500]="nameControl?.valid && nameControl?.touched"
+                class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm transition-all"
+              />
+              <div *ngIf="nameControl?.invalid && (nameControl?.dirty || nameControl?.touched)" class="absolute right-3.5 top-3.5 text-rose-400">
+                <i class="fa-solid fa-circle-exclamation text-sm"></i>
+              </div>
+            </div>
+
+            <!-- Name Validation Messages -->
+            <div *ngIf="nameControl?.invalid && (nameControl?.dirty || nameControl?.touched)" class="mt-1.5 space-y-1">
+              <p *ngIf="nameControl?.errors?.['required']" class="text-rose-400 text-xs flex items-center gap-1">
+                <i class="fa-solid fa-arrow-right text-[9px]"></i> Name is required.
+              </p>
+              <p *ngIf="nameControl?.errors?.['minlength']" class="text-rose-400 text-xs flex items-center gap-1">
+                <i class="fa-solid fa-arrow-right text-[9px]"></i> Name must be at least 3 characters.
+              </p>
+              <p *ngIf="nameControl?.errors?.['maxlength']" class="text-rose-400 text-xs flex items-center gap-1">
+                <i class="fa-solid fa-arrow-right text-[9px]"></i> Name cannot exceed 60 characters.
+              </p>
+            </div>
+          </div>
+
+          <!-- Email Field -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label for="contact-email" class="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                Email Address <span class="text-rose-400">*</span>
+              </label>
+              <span *ngIf="emailControl?.valid && emailControl?.touched" class="text-emerald-400 text-xs flex items-center gap-1 font-medium">
+                <i class="fa-solid fa-check text-[10px]"></i> Valid
+              </span>
+            </div>
+            <div class="relative">
+              <input
+                id="contact-email"
+                type="email"
+                formControlName="email"
+                placeholder="alex&#64;domain.com"
+                [class.border-rose-500]="emailControl?.invalid && (emailControl?.dirty || emailControl?.touched)"
+                [class.border-emerald-500]="emailControl?.valid && emailControl?.touched"
+                class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm transition-all"
+              />
+              <div *ngIf="emailControl?.invalid && (emailControl?.dirty || emailControl?.touched)" class="absolute right-3.5 top-3.5 text-rose-400">
+                <i class="fa-solid fa-circle-exclamation text-sm"></i>
+              </div>
+            </div>
+
+            <!-- Email Validation Messages -->
+            <div *ngIf="emailControl?.invalid && (emailControl?.dirty || emailControl?.touched)" class="mt-1.5 space-y-1">
+              <p *ngIf="emailControl?.errors?.['required']" class="text-rose-400 text-xs flex items-center gap-1">
+                <i class="fa-solid fa-arrow-right text-[9px]"></i> Email address is required.
+              </p>
+              <p *ngIf="emailControl?.errors?.['pattern']" class="text-rose-400 text-xs flex items-center gap-1">
+                <i class="fa-solid fa-arrow-right text-[9px]"></i> Please enter a valid email format (e.g. user&#64;domain.com).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <!-- Optional Phone Field -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label for="contact-phone" class="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                Phone Number <span class="text-slate-500 font-normal text-[11px]">(Optional)</span>
+              </label>
+              <span *ngIf="phoneControl?.valid && phoneControl?.value && phoneControl?.touched" class="text-emerald-400 text-xs flex items-center gap-1 font-medium">
+                <i class="fa-solid fa-check text-[10px]"></i> Valid
+              </span>
+            </div>
+            <div class="relative">
+              <input
+                id="contact-phone"
+                type="tel"
+                formControlName="phone"
+                placeholder="+1 (555) 019-2834"
+                [class.border-rose-500]="phoneControl?.invalid && (phoneControl?.dirty || phoneControl?.touched)"
+                [class.border-emerald-500]="phoneControl?.valid && phoneControl?.value && phoneControl?.touched"
+                class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm transition-all"
+              />
+              <div *ngIf="phoneControl?.invalid && (phoneControl?.dirty || phoneControl?.touched)" class="absolute right-3.5 top-3.5 text-rose-400">
+                <i class="fa-solid fa-circle-exclamation text-sm"></i>
+              </div>
+            </div>
+
+            <!-- Phone Validation Messages -->
+            <div *ngIf="phoneControl?.invalid && (phoneControl?.dirty || phoneControl?.touched)" class="mt-1.5">
+              <p *ngIf="phoneControl?.errors?.['pattern']" class="text-rose-400 text-xs flex items-center gap-1">
+                <i class="fa-solid fa-arrow-right text-[9px]"></i> Please enter a valid phone number format.
+              </p>
+            </div>
+          </div>
+
+          <!-- Subject Field -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label for="contact-subject" class="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                Subject / Inquiry <span class="text-rose-400">*</span>
+              </label>
+              <span *ngIf="subjectControl?.valid && subjectControl?.touched" class="text-emerald-400 text-xs flex items-center gap-1 font-medium">
+                <i class="fa-solid fa-check text-[10px]"></i> Valid
+              </span>
+            </div>
+            <div class="relative">
+              <input
+                id="contact-subject"
+                type="text"
+                formControlName="subject"
+                placeholder="e.g. Weather sensor discrepancy report"
+                [class.border-rose-500]="subjectControl?.invalid && (subjectControl?.dirty || subjectControl?.touched)"
+                [class.border-emerald-500]="subjectControl?.valid && subjectControl?.touched"
+                class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm transition-all"
+              />
+              <div *ngIf="subjectControl?.invalid && (subjectControl?.dirty || subjectControl?.touched)" class="absolute right-3.5 top-3.5 text-rose-400">
+                <i class="fa-solid fa-circle-exclamation text-sm"></i>
+              </div>
+            </div>
+
+            <!-- Subject Validation Messages -->
+            <div *ngIf="subjectControl?.invalid && (subjectControl?.dirty || subjectControl?.touched)" class="mt-1.5 space-y-1">
+              <p *ngIf="subjectControl?.errors?.['required']" class="text-rose-400 text-xs flex items-center gap-1">
+                <i class="fa-solid fa-arrow-right text-[9px]"></i> Subject is required.
+              </p>
+              <p *ngIf="subjectControl?.errors?.['minlength']" class="text-rose-400 text-xs flex items-center gap-1">
+                <i class="fa-solid fa-arrow-right text-[9px]"></i> Subject must be at least 4 characters.
+              </p>
+              <p *ngIf="subjectControl?.errors?.['maxlength']" class="text-rose-400 text-xs flex items-center gap-1">
+                <i class="fa-solid fa-arrow-right text-[9px]"></i> Subject cannot exceed 100 characters.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message Field with Character Counter -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="contact-message" class="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              Inquiry Details or Weather Report <span class="text-rose-400">*</span>
+            </label>
+            <div class="flex items-center gap-2">
+              <span *ngIf="messageControl?.valid && messageControl?.touched" class="text-emerald-400 text-xs flex items-center gap-1 font-medium">
+                <i class="fa-solid fa-check text-[10px]"></i> Valid
+              </span>
+              <span class="text-[11px] font-mono text-slate-400">
+                {{ (messageControl?.value || '').length }}/1000
+              </span>
+            </div>
+          </div>
+          <div class="relative">
+            <textarea
+              id="contact-message"
+              rows="5"
+              formControlName="message"
+              placeholder="Describe your meteorological observation, telemetry sensor inquiry, or platform feedback (minimum 15 characters)..."
+              [class.border-rose-500]="messageControl?.invalid && (messageControl?.dirty || messageControl?.touched)"
+              [class.border-emerald-500]="messageControl?.valid && messageControl?.touched"
+              class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm transition-all"
+            ></textarea>
+            <div *ngIf="messageControl?.invalid && (messageControl?.dirty || messageControl?.touched)" class="absolute right-3.5 top-3.5 text-rose-400">
+              <i class="fa-solid fa-circle-exclamation text-sm"></i>
+            </div>
+          </div>
+
+          <!-- Message Validation Messages -->
+          <div *ngIf="messageControl?.invalid && (messageControl?.dirty || messageControl?.touched)" class="mt-1.5 space-y-1">
+            <p *ngIf="messageControl?.errors?.['required']" class="text-rose-400 text-xs flex items-center gap-1">
+              <i class="fa-solid fa-arrow-right text-[9px]"></i> Message content is required.
+            </p>
+            <p *ngIf="messageControl?.errors?.['minlength']" class="text-rose-400 text-xs flex items-center gap-1">
+              <i class="fa-solid fa-arrow-right text-[9px]"></i> Message must be at least 15 characters long to provide sufficient detail.
+            </p>
+            <p *ngIf="messageControl?.errors?.['maxlength']" class="text-rose-400 text-xs flex items-center gap-1">
+              <i class="fa-solid fa-arrow-right text-[9px]"></i> Message cannot exceed 1000 characters.
+            </p>
+          </div>
+        </div>
+
+        <!-- Form Action Buttons -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+          <p class="text-xs text-slate-400">
+            <span class="text-rose-400">*</span> Required fields will be validated before transmission.
+          </p>
+
+          <button
+            id="contact-submit-button"
+            type="submit"
+            [disabled]="isSubmitting"
+            class="w-full sm:w-auto px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm transition-all cursor-pointer shadow-lg shadow-blue-900/30 flex items-center justify-center gap-2"
+          >
+            <i *ngIf="!isSubmitting" class="fa-regular fa-paper-plane text-xs"></i>
+            <i *ngIf="isSubmitting" class="fa-solid fa-circle-notch fa-spin text-xs"></i>
+            <span>{{ isSubmitting ? 'Transmitting...' : 'Transmit Message' }}</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+

@@ -1,0 +1,86 @@
+@import "tailwindcss/index.css";
+
+:root {
+  --weather-ink: #07111f;
+  --weather-panel: rgba(15, 28, 48, 0.72);
+  --weather-line: rgba(148, 163, 184, 0.16);
+  --weather-accent: #38bdf8;
+}
+
+html {
+  background: var(--weather-ink);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 85% 0%, rgba(14, 165, 233, 0.12), transparent 32rem),
+    radial-gradient(circle at 5% 35%, rgba(37, 99, 235, 0.08), transparent 28rem),
+    var(--weather-ink);
+  color: #e2e8f0;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--weather-accent);
+  outline-offset: 2px;
+}
+
+app-today-forecast > div > div,
+app-forecast-list > aside,
+app-weather-telemetry .bg-slate-800\/30 {
+  border: 0 !important;
+  box-shadow: 0 22px 60px rgba(2, 8, 23, 0.28) !important;
+}
+
+nav .border {
+  border: 0 !important;
+}
+
+app-forecast-list > aside {
+  background-color: rgba(15, 28, 48, 0.58) !important;
+}
+
+app-weather-telemetry .bg-slate-800\/30 {
+  background-color: rgba(15, 28, 48, 0.52) !important;
+}
+
+@layer utilities {
+  .hero-weather-bg {
+    background-image: radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.15), transparent 45%),
+                      radial-gradient(circle at 10% 80%, rgba(14, 165, 233, 0.08), transparent 40%);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B1120;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+
+::selection {
+  color: #ffffff;
+  background: #2563eb;
+}

@@ -1,0 +1,100 @@
+<div *ngIf="data && current && location" class="w-full flex flex-col gap-6">
+  <!-- Primary Hero Weather Card -->
+  <div class="bg-linear-to-br from-blue-600/20 via-slate-800/40 to-slate-900/60 border border-blue-500/20 rounded-4xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden backdrop-blur-xl shadow-2xl">
+    <!-- Ambient radial glow -->
+    <div class="absolute top-0 right-0 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+
+    <!-- Header: Location & Live Tag -->
+    <div class="flex justify-between items-start relative z-10">
+      <div>
+        <div class="flex items-center gap-2">
+          <h2 class="text-3xl sm:text-4xl font-semibold text-white tracking-tight">
+            {{ location.name }}
+          </h2>
+        </div>
+        <p class="text-blue-400 font-medium text-sm sm:text-base mt-0.5">
+          {{ location.region ? location.region + ', ' : '' }}{{ location.country }}
+        </p>
+        <p class="text-xs text-slate-400 mt-0.5">
+          {{ dayName }}, {{ formattedDate }}
+        </p>
+      </div>
+
+      <div class="text-right">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+          Live Station
+        </span>
+      </div>
+    </div>
+
+    <!-- Main: Temperature, Condition, Icon -->
+    <div class="my-6 flex flex-col sm:flex-row sm:items-end justify-between gap-6 relative z-10">
+      <div class="flex flex-wrap items-baseline gap-4 sm:gap-6">
+        <span class="text-6xl sm:text-7xl lg:text-[88px] font-bold leading-none tracking-tighter text-white">
+          {{ tempDisplay }}°
+        </span>
+        <div class="flex flex-col justify-center">
+          <span class="text-2xl sm:text-3xl font-medium text-slate-100">
+            {{ current.condition.text }}
+          </span>
+          <span class="text-sm text-slate-400 font-medium mt-1">
+            H: {{ maxTempDisplay }}°{{ unit }} • L: {{ minTempDisplay }}°{{ unit }}
+          </span>
+        </div>
+      </div>
+
+      <div class="self-end sm:self-auto">
+        <img
+          [src]="iconUrl"
+          [alt]="current.condition.text"
+          class="w-24 h-24 sm:w-28 sm:h-28 drop-shadow-xl object-contain hover:scale-105 transition-transform"
+        />
+      </div>
+    </div>
+
+    <!-- Telemetry Tag Badges -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-4 border-t border-slate-700/50 relative z-10 text-xs">
+      <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/40 border border-slate-700/40">
+        <i class="fa-solid fa-droplet text-blue-400"></i>
+        <span class="text-slate-300 truncate">Feels: <strong class="text-white">{{ feelsLikeDisplay }}°{{ unit }}</strong></span>
+      </div>
+      <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/40 border border-slate-700/40">
+        <i class="fa-solid fa-sun text-amber-400"></i>
+        <span class="text-slate-300 truncate">UV: <strong class="text-white">{{ current.uv }}</strong></span>
+      </div>
+      <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/40 border border-slate-700/40">
+        <i class="fa-solid fa-gauge-high text-indigo-400"></i>
+        <span class="text-slate-300 truncate">Press: <strong class="text-white">{{ current.pressure_mb }} mb</strong></span>
+      </div>
+      <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/40 border border-slate-700/40">
+        <i class="fa-solid fa-eye text-teal-400"></i>
+        <span class="text-slate-300 truncate">Vis: <strong class="text-white">{{ current.vis_km }} km</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hourly Forecast Timeline -->
+  <div *ngIf="todayForecast?.hour && todayForecast!.hour!.length > 0" class="bg-slate-800/30 border border-slate-700/50 rounded-4xl p-6 backdrop-blur-md shadow-xl">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xs uppercase tracking-widest text-slate-400 font-bold">
+        Hourly Forecast
+      </h3>
+      <span class="text-xs text-slate-500 font-mono">24-Hour Timeline</span>
+    </div>
+
+    <div class="flex items-center justify-between gap-2 overflow-x-auto pb-2 scrollbar-thin">
+      <div
+        *ngFor="let h of filteredHourly; let i = index"
+        [ngClass]="isHourCurrent(h.time, i) ? 'px-3.5 py-3 bg-blue-600 rounded-2xl shadow-lg shadow-blue-900/30 text-white font-bold' : 'px-2.5 py-2 rounded-xl text-slate-300 hover:bg-slate-700/30'"
+        class="flex flex-col items-center gap-2 min-w-16 transition-all"
+      >
+        <span [ngClass]="isHourCurrent(h.time, i) ? 'text-blue-100 font-semibold' : 'text-slate-400'" class="text-xs">
+          {{ formatHourLabel(h.time, i) }}
+        </span>
+        <img [src]="getHourIcon(h.condition.icon)" alt="" class="w-6 h-6 object-contain" />
+        <span class="text-sm font-semibold">{{ getHourTemp(h) }}°</span>
+      </div>
+    </div>
+  </div>
+</div>

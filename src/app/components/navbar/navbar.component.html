@@ -1,0 +1,178 @@
+<nav class="fixed top-0 left-0 right-0 z-50 bg-[#0B1120]/80 backdrop-blur-xl border-b border-slate-800/80 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo and Brand -->
+      <div
+        (click)="setTab('home')"
+        class="flex items-center gap-3.5 cursor-pointer group"
+      >
+        <div class="w-11 h-11 rounded-2xl bg-linear-to-tr from-blue-600 to-sky-400 p-0.5 shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform duration-300">
+          <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center overflow-hidden">
+            <img
+              src="/images/1779765.png"
+              [class.hidden]="logoBroken"
+              alt="WeatherStation Sun and Cloud Logo"
+              class="w-7 h-7 object-contain drop-shadow"
+              referrerpolicy="no-referrer"
+              (error)="onLogoError($event)"
+            />
+            <i
+              *ngIf="logoBroken"
+              class="fa-solid fa-cloud-sun text-2xl text-sky-300"
+              aria-label="WeatherStation logo"
+            ></i>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-1.5">
+            <span class="text-xl font-bold tracking-tight text-white group-hover:text-blue-400 transition-colors">
+              WeatherStation
+            </span>
+          </div>
+          <span class="text-[11px] text-slate-400 font-medium tracking-wide uppercase">
+            Atmospheric Telemetry
+          </span>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Tabs -->
+      <div class="hidden md:flex items-center gap-1.5 bg-slate-800/40 p-1.5 rounded-2xl border border-slate-700/40 backdrop-blur-md">
+        <button
+          (click)="setTab('home')"
+          [class.active-nav-tab]="activeTab === 'home'"
+          [class.inactive-nav-tab]="activeTab !== 'home'"
+          class="nav-tab-btn"
+        >
+          <i class="fa-solid fa-cloud-sun text-xs mr-1.5"></i>
+          Forecast
+        </button>
+
+        <button
+          (click)="setTab('news')"
+          [class.active-nav-tab]="activeTab === 'news'"
+          [class.inactive-nav-tab]="activeTab !== 'news'"
+          class="nav-tab-btn"
+        >
+          <i class="fa-regular fa-newspaper text-xs mr-1.5"></i>
+          News
+        </button>
+
+        <button
+          (click)="setTab('photos')"
+          [class.active-nav-tab]="activeTab === 'photos'"
+          [class.inactive-nav-tab]="activeTab !== 'photos'"
+          class="nav-tab-btn"
+        >
+          <i class="fa-solid fa-camera-retro text-xs mr-1.5"></i>
+          Photos
+        </button>
+
+        <button
+          (click)="setTab('contact')"
+          [class.active-nav-tab]="activeTab === 'contact'"
+          [class.inactive-nav-tab]="activeTab !== 'contact'"
+          class="nav-tab-btn"
+        >
+          <i class="fa-regular fa-envelope text-xs mr-1.5"></i>
+          Contact
+        </button>
+      </div>
+
+      <!-- Actions: Chatbot button & Unit switch -->
+      <div class="hidden md:flex items-center gap-3">
+        <!-- Assistant Trigger -->
+        <button
+          (click)="openAssistant()"
+          class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-semibold transition-all cursor-pointer shadow-sm hover:scale-105"
+        >
+          <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
+          <i class="fa-solid fa-robot text-blue-400"></i>
+          <span>Ask Assistant</span>
+        </button>
+
+        <!-- Temperature Unit Toggle -->
+        <div class="flex items-center bg-slate-800/60 p-1 rounded-xl border border-slate-700/60 text-xs font-bold font-mono">
+          <button
+            (click)="toggleUnit()"
+            [class.bg-blue-600]="unit === 'C'"
+            [class.text-white]="unit === 'C'"
+            [class.text-slate-400]="unit !== 'C'"
+            class="px-2.5 py-1.5 rounded-lg transition-all cursor-pointer"
+          >
+            °C
+          </button>
+          <button
+            (click)="toggleUnit()"
+            [class.bg-blue-600]="unit === 'F'"
+            [class.text-white]="unit === 'F'"
+            [class.text-slate-400]="unit !== 'F'"
+            class="px-2.5 py-1.5 rounded-lg transition-all cursor-pointer"
+          >
+            °F
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden flex items-center gap-2">
+        <button
+          (click)="openAssistant()"
+          class="p-2.5 rounded-xl bg-blue-600/20 text-blue-400 border border-blue-500/30 text-xs"
+        >
+          <i class="fa-solid fa-robot"></i>
+        </button>
+        <button
+          (click)="toggleMobileMenu()"
+          class="p-2.5 rounded-xl bg-slate-800 text-slate-300 border border-slate-700"
+        >
+          <i [class]="isMobileMenuOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Dropdown Menu -->
+  <div
+    *ngIf="isMobileMenuOpen"
+    class="md:hidden bg-[#0B1120]/95 border-b border-slate-800 px-4 pt-2 pb-6 space-y-2 backdrop-blur-xl"
+  >
+    <button
+      (click)="setTab('home')"
+      [class.text-blue-400]="activeTab === 'home'"
+      class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800/60 text-slate-200 flex items-center gap-2"
+    >
+      <i class="fa-solid fa-cloud-sun text-sm"></i> Forecast
+    </button>
+    <button
+      (click)="setTab('news')"
+      [class.text-blue-400]="activeTab === 'news'"
+      class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800/60 text-slate-200 flex items-center gap-2"
+    >
+      <i class="fa-regular fa-newspaper text-sm"></i> News
+    </button>
+    <button
+      (click)="setTab('photos')"
+      [class.text-blue-400]="activeTab === 'photos'"
+      class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800/60 text-slate-200 flex items-center gap-2"
+    >
+      <i class="fa-solid fa-camera-retro text-sm"></i> Photos
+    </button>
+    <button
+      (click)="setTab('contact')"
+      [class.text-blue-400]="activeTab === 'contact'"
+      class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-800/60 text-slate-200 flex items-center gap-2"
+    >
+      <i class="fa-regular fa-envelope text-sm"></i> Contact
+    </button>
+
+    <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+      <span class="text-xs text-slate-400 font-medium">Temperature Scale:</span>
+      <button
+        (click)="toggleUnit()"
+        class="px-3 py-1.5 rounded-lg bg-slate-800 text-blue-400 border border-slate-700 text-xs font-bold font-mono"
+      >
+        Switch to °{{ unit === 'C' ? 'F' : 'C' }}
+      </button>
+    </div>
+  </div>
+</nav>
