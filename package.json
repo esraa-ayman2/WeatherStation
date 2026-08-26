@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "ng serve",
+    "start": "node server/dev-server.mjs",
+    "chat-api": "node server/chat-server.mjs",
     "build": "ng build",
     "watch": "ng build --watch",
     "test": "ng test"

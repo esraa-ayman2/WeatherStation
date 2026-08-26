@@ -10,7 +10,7 @@ export class WeatherService {
   public weatherData$: Observable<WeatherApiResponse | null> = this.weatherDataSubject.asObservable();
 
   public resolveCityName(city: string): string {
-    return city;
+    return city.trim();
   }
 
   private loadingSubject = new BehaviorSubject<boolean>(false);
@@ -25,99 +25,6 @@ export class WeatherService {
   private suggestionsController?: AbortController;
   private suggestionsRequestId = 0;
   private weatherRequestId = 0;
-
-  private popularCities = ['Cairo', 'Alexandria', 'London', 'New York', 'Tokyo', 'Dubai', 'Paris', 'Sydney'];
-
-  private searchAliases: Record<string, string> = {
-    'مصر': 'Cairo',
-    'القاهرة': 'Cairo',
-    'الاسكندرية': 'Alexandria',
-    'الإسكندرية': 'Alexandria',
-    'انجلترا': 'London',
-    'إنجلترا': 'London',
-    'بريطانيا': 'London',
-    'لندن': 'London',
-    'امريكا': 'New York',
-    'أمريكا': 'New York',
-    'نيويورك': 'New York',
-    'اليابان': 'Tokyo',
-    'طوكيو': 'Tokyo',
-    'الامارات': 'Dubai',
-    'الإمارات': 'Dubai',
-    'دبي': 'Dubai',
-    'السعودية': 'Riyadh',
-    'الرياض': 'Riyadh',
-    'فرنسا': 'Paris',
-    'باريس': 'Paris',
-    'استراليا': 'Sydney',
-    'أستراليا': 'Sydney',
-    'سيدني': 'Sydney',
-    'المانيا': 'Berlin',
-    'ألمانيا': 'Berlin',
-    'برلين': 'Berlin',
-    'ايطاليا': 'Rome',
-    'إيطاليا': 'Rome',
-    'روما': 'Rome',
-    'كندا': 'Toronto',
-    'تورنتو': 'Toronto',
-    'تركيا': 'Istanbul',
-    'اسطنبول': 'Istanbul',
-    'إسطنبول': 'Istanbul',
-    'اسبانيا': 'Madrid',
-    'إسبانيا': 'Madrid',
-    'مدريد': 'Madrid',
-    'قطر': 'Doha',
-    'الدوحة': 'Doha',
-    'الكويت': 'Kuwait City',
-    'بيروت': 'Beirut',
-    'لبنان': 'Beirut',
-    'الاردن': 'Amman',
-    'الأردن': 'Amman',
-    'عمان': 'Amman',
-    'جدة': 'Jeddah',
-    'ابوظبي': 'Abu Dhabi',
-    'أبوظبي': 'Abu Dhabi',
-    'المنصورة': 'Mansoura',
-    'الاقصر': 'Luxor',
-    'الأقصر': 'Luxor',
-    'اسوان': 'Aswan',
-    'أسوان': 'Aswan',
-  };
-
-  // Global English cities fallback and instant autocomplete database
-  private defaultSuggestions: LocationSuggestion[] = [
-    { id: 1, name: 'Cairo', region: 'Cairo Governorate', country: 'Egypt', lat: 30.0626, lon: 31.2497 },
-    { id: 2, name: 'Alexandria', region: 'Alexandria Governorate', country: 'Egypt', lat: 31.2001, lon: 29.9187 },
-    { id: 3, name: 'London', region: 'England', country: 'United Kingdom', lat: 51.5085, lon: -0.1257 },
-    { id: 4, name: 'New York', region: 'New York', country: 'United States', lat: 40.7128, lon: -74.006 },
-    { id: 5, name: 'Tokyo', region: 'Tokyo', country: 'Japan', lat: 35.6895, lon: 139.6917 },
-    { id: 6, name: 'Paris', region: 'Ile-de-France', country: 'France', lat: 48.8566, lon: 2.3522 },
-    { id: 7, name: 'Dubai', region: 'Dubai', country: 'United Arab Emirates', lat: 25.2048, lon: 55.2708 },
-    { id: 8, name: 'Riyadh', region: 'Riyadh Province', country: 'Saudi Arabia', lat: 24.7136, lon: 46.6753 },
-    { id: 9, name: 'Sydney', region: 'New South Wales', country: 'Australia', lat: -33.8688, lon: 151.2093 },
-    { id: 10, name: 'Berlin', region: 'Berlin', country: 'Germany', lat: 52.52, lon: 13.405 },
-    { id: 11, name: 'Rome', region: 'Lazio', country: 'Italy', lat: 41.9028, lon: 12.4964 },
-    { id: 12, name: 'Toronto', region: 'Ontario', country: 'Canada', lat: 43.6532, lon: -79.3832 },
-    { id: 13, name: 'Giza', region: 'Giza Governorate', country: 'Egypt', lat: 30.0131, lon: 31.2089 },
-    { id: 14, name: 'Istanbul', region: 'Istanbul', country: 'Turkey', lat: 41.0082, lon: 28.9784 },
-    { id: 15, name: 'Madrid', region: 'Madrid', country: 'Spain', lat: 40.4168, lon: -3.7038 },
-    { id: 16, name: 'Singapore', region: 'Central Community', country: 'Singapore', lat: 1.3521, lon: 103.8198 },
-    { id: 17, name: 'Doha', region: 'Ad Dawhah', country: 'Qatar', lat: 25.2854, lon: 51.531 },
-    { id: 18, name: 'Kuwait City', region: 'Al Asimah', country: 'Kuwait', lat: 29.3759, lon: 47.9774 },
-    { id: 19, name: 'Beirut', region: 'Beirut Governorate', country: 'Lebanon', lat: 33.8938, lon: 35.5018 },
-    { id: 20, name: 'Amman', region: 'Amman Governorate', country: 'Jordan', lat: 31.9454, lon: 35.9284 },
-    { id: 21, name: 'Los Angeles', region: 'California', country: 'United States', lat: 34.0522, lon: -118.2437 },
-    { id: 22, name: 'Chicago', region: 'Illinois', country: 'United States', lat: 41.8781, lon: -87.6298 },
-    { id: 23, name: 'San Francisco', region: 'California', country: 'United States', lat: 37.7749, lon: -122.4194 },
-    { id: 24, name: 'Miami', region: 'Florida', country: 'United States', lat: 25.7617, lon: -80.1918 },
-    { id: 25, name: 'Amsterdam', region: 'North Holland', country: 'Netherlands', lat: 52.3676, lon: 4.9041 },
-    { id: 26, name: 'Vienna', region: 'Vienna', country: 'Austria', lat: 48.2082, lon: 16.3738 },
-    { id: 27, name: 'Abu Dhabi', region: 'Abu Dhabi', country: 'United Arab Emirates', lat: 24.4539, lon: 54.3773 },
-    { id: 28, name: 'Jeddah', region: 'Makkah Province', country: 'Saudi Arabia', lat: 21.4858, lon: 39.1925 },
-    { id: 29, name: 'Mansoura', region: 'Dakahlia Governorate', country: 'Egypt', lat: 31.0409, lon: 31.3785 },
-    { id: 30, name: 'Luxor', region: 'Luxor Governorate', country: 'Egypt', lat: 25.6872, lon: 32.6396 },
-    { id: 31, name: 'Aswan', region: 'Aswan Governorate', country: 'Egypt', lat: 24.0889, lon: 32.8998 },
-  ];
 
   private newsItems: WeatherNewsItem[] = [
     {
@@ -157,7 +64,7 @@ export class WeatherService {
       category: 'Urban Ecology',
       date: 'August 18, 2026',
       readTime: '4 min read',
-      imageUrl: 'https://images.unsplash.com/photo-1477959858617-67f30bc75b82?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/images/beauty-daylight-stratosphere-abstract-space.jpg',
       source: 'EcoWeather News',
     },
   ];
@@ -223,10 +130,6 @@ export class WeatherService {
     this.fetchWeather('Cairo');
   }
 
-  public getPopularCities(): string[] {
-    return this.popularCities;
-  }
-
   public getNews(): WeatherNewsItem[] {
     return this.newsItems;
   }
@@ -249,34 +152,19 @@ export class WeatherService {
       return [];
     }
 
-    const normalizedQuery = this.normalizeSearchText(trimmed);
-    const apiQuery = this.resolveSearchAlias(normalizedQuery) || trimmed;
-    const qLower = normalizedQuery;
-
-    // 1. Instant local English cities matches
-    const localMatches = this.defaultSuggestions.filter(
-      (loc) =>
-        this.normalizeSearchText(loc.name).includes(qLower) ||
-        this.normalizeSearchText(loc.country).includes(qLower) ||
-        this.normalizeSearchText(loc.region).includes(qLower) ||
-        Object.entries(this.searchAliases).some(
-          ([alias, city]) => alias.includes(qLower) && city.toLowerCase() === loc.name.toLowerCase()
-        )
-    );
-
-    // 2. Fetch live Open-Meteo geocoding search in English
+    // Nominatim provides live Arabic and English place names and coordinates.
     try {
       const requestId = ++this.suggestionsRequestId;
       this.suggestionsController?.abort();
       const controller = new AbortController();
       this.suggestionsController = controller;
       const timeoutId = setTimeout(() => controller.abort(), 8000);
-      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(apiQuery)}&count=8&language=en&format=json`;
+      const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&accept-language=ar,en&q=${encodeURIComponent(trimmed)}&limit=8`;
       const response = await fetch(url, { signal: controller.signal });
       clearTimeout(timeoutId);
 
       if (controller.signal.aborted) {
-        return localMatches;
+        return [];
       }
 
       if (requestId !== this.suggestionsRequestId) {
@@ -285,36 +173,24 @@ export class WeatherService {
 
       if (response.ok) {
         const data = await response.json();
-        if (data && Array.isArray(data.results) && data.results.length > 0) {
-          const apiSuggestions: LocationSuggestion[] = data.results.map((r: any) => ({
-            id: r.id,
-            name: r.name,
-            region: r.admin1 || r.admin2 || '',
-            country: r.country || '',
-            lat: r.latitude,
-            lon: r.longitude,
+        if (Array.isArray(data) && data.length > 0) {
+          const apiSuggestions: LocationSuggestion[] = data.map((r: any) => ({
+            id: r.place_id,
+            name: r.name || r.display_name.split(',')[0],
+            region: r.address?.state || r.address?.county || '',
+            country: r.address?.country || '',
+            lat: Number(r.lat),
+            lon: Number(r.lon),
           }));
 
-          // Merge without duplicate coordinates
-          const seen = new Set<string>();
-          const combined: LocationSuggestion[] = [];
-
-          for (const item of [...apiSuggestions, ...localMatches]) {
-            const key = `${item.name.toLowerCase()}-${item.country.toLowerCase()}`;
-            if (!seen.has(key)) {
-              seen.add(key);
-              combined.push(item);
-            }
-          }
-
-          return combined.slice(0, 8);
+          return apiSuggestions;
         }
       }
     } catch (err) {
       // Network slow or abort -> use local instant matches
     }
 
-    return localMatches;
+    return [];
   }
 
   /**
@@ -329,34 +205,24 @@ export class WeatherService {
     this.errorSubject.next(null);
 
     try {
-      // Check if location is in local suggestions first for instant coordinates
-      const normalizedQuery = this.normalizeSearchText(trimmed);
-      const resolvedQuery = this.searchAliases[normalizedQuery] || trimmed;
-      const qLower = this.normalizeSearchText(resolvedQuery);
-      let matchedLocation = this.defaultSuggestions.find(
-        (l) => this.normalizeSearchText(l.name) === qLower || `${this.normalizeSearchText(l.name)}, ${this.normalizeSearchText(l.country)}` === qLower
-      );
+      const resolvedQuery = trimmed;
+      let lat: number | undefined;
+      let lon: number | undefined;
+      let cityName = trimmed;
+      let region = '';
+      let country = '';
 
-      let lat = matchedLocation?.lat;
-      let lon = matchedLocation?.lon;
-      let cityName = matchedLocation?.name || trimmed;
-      let region = matchedLocation?.region || '';
-      let country = matchedLocation?.country || '';
-
-      // If not in local list, resolve coordinates via Open-Meteo Geocoding
-      if (!lat || !lon) {
-        const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(resolvedQuery)}&count=1&language=en&format=json`;
-        const geoRes = await fetch(geoUrl);
-        if (geoRes.ok) {
-          const geoData = await geoRes.json();
-          if (geoData.results && geoData.results.length > 0) {
-            const first = geoData.results[0];
-            lat = first.latitude;
-            lon = first.longitude;
-            cityName = first.name;
-            region = first.admin1 || '';
-            country = first.country || '';
-          }
+      const geoUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&accept-language=ar,en&q=${encodeURIComponent(resolvedQuery)}&limit=1`;
+      const geoRes = await fetch(geoUrl);
+      if (geoRes.ok) {
+        const geoData = await geoRes.json();
+        if (Array.isArray(geoData) && geoData.length > 0) {
+          const first = geoData[0];
+          lat = Number(first.lat);
+          lon = Number(first.lon);
+          cityName = first.name || first.display_name.split(',')[0];
+          region = first.address?.state || first.address?.county || '';
+          country = first.address?.country || '';
         }
       }
 
@@ -398,11 +264,15 @@ export class WeatherService {
     name = 'Current Location',
     region = 'Local Station',
     country = 'GPS Coordinates'
-  ): Promise<void> {
+  ): Promise<string> {
     this.loadingSubject.next(true);
     this.errorSubject.next(null);
 
     try {
+      const place = await this.reverseGeocode(latitude, longitude);
+      const resolvedName = place?.name || name;
+      const resolvedRegion = place?.region || region;
+      const resolvedCountry = place?.country || country;
       const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m,uv_index&hourly=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max&timezone=auto`;
       const forecastRes = await fetch(forecastUrl);
 
@@ -411,12 +281,31 @@ export class WeatherService {
       }
 
       const raw = await forecastRes.json();
-      const formatted = this.mapOpenMeteoToWeatherApi(name, region, country, latitude, longitude, raw);
+      const formatted = this.mapOpenMeteoToWeatherApi(resolvedName, resolvedRegion, resolvedCountry, latitude, longitude, raw);
       this.weatherDataSubject.next(formatted);
+      return `${resolvedName}${resolvedCountry ? `, ${resolvedCountry}` : ''}`;
     } catch (err: any) {
       this.errorSubject.next(err.message || 'Location lookup failed');
+      return name;
     } finally {
       this.loadingSubject.next(false);
+    }
+  }
+
+  private async reverseGeocode(latitude: number, longitude: number): Promise<{ name: string; region: string; country: string } | null> {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&accept-language=ar,en&lat=${latitude}&lon=${longitude}`;
+      const response = await fetch(url);
+      if (!response.ok) return null;
+      const data = await response.json();
+      const address = data.address || {};
+      return {
+        name: address.city || address.town || address.village || address.municipality || data.name || 'Current Location',
+        region: address.state || address.county || '',
+        country: address.country || '',
+      };
+    } catch {
+      return null;
     }
   }
 
@@ -578,22 +467,8 @@ export class WeatherService {
     return directions[val % 16];
   }
 
-  private normalizeSearchText(value: string): string {
-    return value
-      .trim()
-      .toLowerCase()
-      .normalize('NFKD')
-      .replace(/[\u064B-\u065F\u0670]/g, '')
-      .replace(/[أإآ]/g, 'ا')
-      .replace(/ى/g, 'ي')
-      .replace(/ة/g, 'ه');
-  }
-
   private resolveSearchAlias(normalizedQuery: string): string | undefined {
-    const alias = Object.entries(this.searchAliases).find(
-      ([key]) => this.normalizeSearchText(key) === normalizedQuery
-    );
-    return alias?.[1];
+    return undefined;
   }
 
   private wmoCodeToCondition(code: number, isDay: number) {

@@ -50,7 +50,8 @@
               "buildTarget": "example:build:production"
             },
             "development": {
-              "buildTarget": "example:build:development"
+              "buildTarget": "example:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

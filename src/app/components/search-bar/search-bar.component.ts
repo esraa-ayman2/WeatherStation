@@ -23,15 +23,6 @@ export class SearchBarComponent implements OnDestroy {
   public isSearchingSuggestions = false;
   public showSuggestions = false;
   public highlightedIndex = -1;
-  public quickCities = [
-    { name: 'Cairo', arabicName: 'القاهرة' },
-    { name: 'London', arabicName: 'لندن' },
-    { name: 'New York', arabicName: 'نيويورك' },
-    { name: 'Tokyo', arabicName: 'طوكيو' },
-    { name: 'Dubai', arabicName: 'دبي' },
-    { name: 'Riyadh', arabicName: 'الرياض' },
-  ];
-
   private searchSubject = new Subject<string>();
   private searchSubscription: Subscription;
 
@@ -112,13 +103,6 @@ export class SearchBarComponent implements OnDestroy {
     this.weatherService.fetchWeather(trimmed);
   }
 
-  public searchQuickCity(city: string): void {
-    this.searchQuery = city;
-    this.searchError = '';
-    this.showSuggestions = false;
-    this.weatherService.fetchWeather(city);
-  }
-
   public selectSuggestion(suggestion: LocationSuggestion): void {
     const label = suggestion.name + (suggestion.country ? `, ${suggestion.country}` : '');
     this.searchQuery = label;
@@ -172,7 +156,9 @@ export class SearchBarComponent implements OnDestroy {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        this.weatherService.fetchWeatherByCoords(latitude, longitude);
+        this.weatherService.fetchWeatherByCoords(latitude, longitude).then((placeName) => {
+          this.searchQuery = placeName;
+        });
       },
       (error) => {
         console.warn('Geolocation error:', error);

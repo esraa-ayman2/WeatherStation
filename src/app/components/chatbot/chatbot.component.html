@@ -1,16 +1,16 @@
 <!-- Floating Launch Button -->
-<div class="fixed bottom-6 right-6 z-50">
+<div class="fixed bottom-5 right-5 z-50">
   <button
     *ngIf="!isOpen"
     (click)="toggleChat()"
     type="button"
-    class="flex items-center gap-3 px-4 py-3.5 rounded-full bg-linear-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white font-semibold text-sm shadow-2xl shadow-blue-500/40 border border-sky-400/30 transition-all duration-300 hover:scale-105 cursor-pointer"
+    class="flex items-center justify-center w-12 h-12 rounded-full bg-linear-to-r from-blue-600 to-sky-500 hover:from-blue-500 hover:to-sky-400 text-white shadow-2xl shadow-blue-500/40 border border-sky-400/30 transition-all duration-300 hover:scale-105 cursor-pointer"
+    aria-label="Open assistant"
   >
     <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
       <i class="fa-solid fa-robot text-base text-white"></i>
     </div>
-    <span>Weather Assistant / المساعد الذكي</span>
-    <span class="flex h-2.5 w-2.5 relative">
+    <span class="flex h-2.5 w-2.5 absolute -top-0.5 -right-0.5">
       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
       <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
     </span>
@@ -20,7 +20,7 @@
 <!-- Chat Window Dialog -->
 <div
   *ngIf="isOpen"
-  class="fixed bottom-6 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)]  bg-slate-900/95 border border-slate-700/80 rounded-3xl shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-6 duration-300"
+  class="fixed bottom-5 right-4 sm:right-5 z-50 w-[min(360px,calc(100vw-2rem))] h-[min(600px,calc(100vh-2rem))] bg-slate-900/95 border border-slate-700/80 rounded-3xl shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-6 duration-300"
 >
   <!-- Chat Header -->
   <div class="px-5 py-4 bg-slate-800/80 border-b border-slate-700/70 flex items-center justify-between">
@@ -81,22 +81,6 @@
         {{ msg.timestamp }}
       </span>
 
-      <!-- Quick Replies (if bot message) -->
-      <div
-        *ngIf="msg.sender === 'bot' && msg.quickReplies && msg.quickReplies.length > 0"
-        [dir]="msg.isArabic ? 'rtl' : 'ltr'"
-        class="flex flex-wrap gap-1.5 mt-2"
-        [ngClass]="msg.isArabic ? 'pr-2' : 'pl-8'"
-      >
-        <button
-          *ngFor="let qr of msg.quickReplies"
-          (click)="sendQuickReply(qr)"
-          type="button"
-          class="px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-blue-600 hover:text-white text-blue-300 border border-slate-700/80 text-[11px] font-medium transition-colors cursor-pointer"
-        >
-          {{ qr }}
-        </button>
-      </div>
     </div>
   </div>
 

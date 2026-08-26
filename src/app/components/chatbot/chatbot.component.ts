@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ChatbotService } from '../../services/chatbot.service';
+import { ChatbotService } from '../../services';
 import { ChatMessage } from '../../interfaces';
 import { RtlDetectorDirective } from '../../directives/rtl-detector.directive';
 
@@ -45,10 +45,6 @@ export class ChatbotComponent implements AfterViewChecked {
       this.chatbotService.sendMessage(this.userInput);
       this.userInput = '';
     }
-  }
-
-  public sendQuickReply(replyText: string): void {
-    this.chatbotService.sendMessage(replyText);
   }
 
   private scrollToBottom(): void {

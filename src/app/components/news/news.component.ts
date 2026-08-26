@@ -22,4 +22,10 @@ export class NewsComponent {
   public onBack(): void {
     this.backToHome.emit();
   }
+
+  public onImageError(event: Event): void {
+    const image = event.target as HTMLImageElement;
+    image.onerror = null;
+    image.src = '/images/beauty-daylight-stratosphere-abstract-space.jpg';
+  }
 }
