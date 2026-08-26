@@ -15,8 +15,8 @@ if (fs.existsSync(envPath)) {
 }
 
 const port = Number(process.env.CHAT_API_PORT || 3001);
-const apiKey = process.env.GROQ_API_KEY;
-const model = process.env.GROQ_MODEL || 'llama-3.1-8b-instant';
+const apiKey = process.env.GEMINI_API_KEY;
+const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
 const server = http.createServer(async (request, response) => {
   if (request.method !== 'POST' || request.url !== '/api/chat') {
@@ -26,7 +26,7 @@ const server = http.createServer(async (request, response) => {
   }
 
   if (!apiKey) {
-    sendJson(response, 503, { error: 'GROQ_API_KEY is missing. Add it to .env, then restart npm run chat-api.' });
+    sendJson(response, 503, { error: 'GEMINI_API_KEY is missing. Add it to .env, then restart npm run chat-api.' });
     return;
   }
 
@@ -35,27 +35,27 @@ const server = http.createServer(async (request, response) => {
     const payload = JSON.parse(body);
     const messages = Array.isArray(payload.messages) ? payload.messages : [];
     const weatherContext = typeof payload.weatherContext === 'string' ? payload.weatherContext : '';
-    const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model,
-        temperature: 0.7,
-        messages: [
-          { role: 'system', content: `You are a helpful general-purpose assistant. Answer naturally in the user's language, including Arabic or English. Do not limit yourself to weather. Use this live weather context only when relevant: ${weatherContext}` },
-          ...messages.slice(-12),
-        ],
+        systemInstruction: {
+          parts: [{ text: `You are a helpful general-purpose assistant. Answer naturally in the user's language, including Arabic or English. Do not limit yourself to weather. Use this live weather context only when relevant: ${weatherContext}` }],
+        },
+        contents: messages.slice(-12).map((message) => ({
+          role: message.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: message.content }],
+        })),
+        generationConfig: { temperature: 0.7 },
       }),
     });
-    const data = await groqResponse.json();
-    if (!groqResponse.ok) {
-      sendJson(response, groqResponse.status, { error: data?.error?.message || 'Groq request failed.' });
+    const data = await geminiResponse.json();
+    if (!geminiResponse.ok) {
+      sendJson(response, geminiResponse.status, { error: data?.error?.message || 'Gemini request failed.' });
       return;
     }
-    sendJson(response, 200, { text: data.choices?.[0]?.message?.content || '' });
+    const text = data.candidates?.[0]?.content?.parts?.map((part) => part.text || '').join('') || '';
+    sendJson(response, 200, { text });
   } catch (error) {
     sendJson(response, 400, { error: error instanceof Error ? error.message : 'Invalid request.' });
   }

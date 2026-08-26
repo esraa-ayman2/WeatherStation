@@ -52,7 +52,7 @@
   </div>
 
   <!-- Messages Scroll Container -->
-  <div #messagesContainer class="flex-1 p-4 overflow-y-auto space-y-4 scrollbar-thin">
+  <div #messagesContainer class="chat-messages min-h-0 flex-1 p-4 overflow-y-auto overscroll-contain space-y-4 scrollbar-thin">
     <div
       *ngFor="let msg of messages"
       [ngClass]="msg.sender === 'user' ? 'flex flex-col items-end' : 'flex flex-col items-start'"

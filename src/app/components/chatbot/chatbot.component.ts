@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatbotService } from '../../services';
@@ -13,7 +13,8 @@ import { RtlDetectorDirective } from '../../directives/rtl-detector.directive';
   styleUrls: ['./chatbot.component.css'],
 })
 export class ChatbotComponent implements AfterViewChecked {
-  @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+  @ViewChild('messagesContainer') private messagesContainer?: ElementRef<HTMLElement>;
+  private lastMessageCount = 0;
 
   public userInput = '';
   public messages: ChatMessage[] = [];
@@ -29,7 +30,12 @@ export class ChatbotComponent implements AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    this.scrollToBottom();
+    if (this.messages.length !== this.lastMessageCount) {
+      this.lastMessageCount = this.messages.length;
+      requestAnimationFrame(() => {
+        this.scrollToBottom();
+      });
+    }
   }
 
   public toggleChat(): void {
@@ -49,10 +55,11 @@ export class ChatbotComponent implements AfterViewChecked {
 
   private scrollToBottom(): void {
     try {
-      if (this.messagesContainer) {
-        this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+      const container = this.messagesContainer?.nativeElement;
+      if (container) {
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
       }
-    } catch (err) {
+    } catch {
       // Ignored
     }
   }

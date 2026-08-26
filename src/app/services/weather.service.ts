@@ -64,7 +64,7 @@ export class WeatherService {
       category: 'Urban Ecology',
       date: 'August 18, 2026',
       readTime: '4 min read',
-      imageUrl: '/images/beauty-daylight-stratosphere-abstract-space.jpg',
+      imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiCyuu6xC3r4c8Du3sl5tbVDDdx5ZYbWVAcVIsAtB6vA&s=10',
       source: 'EcoWeather News',
     },
   ];

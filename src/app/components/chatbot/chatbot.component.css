@@ -1,1 +1,18 @@
-/* Chatbot Component Styles */
+.chat-messages {
+	min-height: 0;
+	height: 0;
+	flex: 1 1 auto;
+	overflow-y: scroll;
+	overscroll-behavior: contain;
+	scrollbar-width: thin;
+	scrollbar-color: #475569 transparent;
+}
+
+.chat-messages::-webkit-scrollbar {
+	width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+	background: #475569;
+	border-radius: 999px;
+}
