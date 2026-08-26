@@ -20,13 +20,21 @@ export class ChatbotComponent implements AfterViewChecked {
   public messages: ChatMessage[] = [];
   public isOpen = false;
 
+  public isLoading = false;
+  public loadingText = 'جاري التفكير...';
+
   constructor(public chatbotService: ChatbotService) {
     this.chatbotService.messages$.subscribe((msgs) => {
       this.messages = msgs;
+      if (msgs.length > 0 && msgs[msgs.length - 1].sender === 'bot') {
+        this.isLoading = false;
+      }
     });
+    
     this.chatbotService.isOpen$.subscribe((open) => {
       this.isOpen = open;
     });
+    
   }
 
   ngAfterViewChecked(): void {
@@ -47,7 +55,10 @@ export class ChatbotComponent implements AfterViewChecked {
   }
 
   public sendMessage(): void {
-    if (this.userInput.trim()) {
+    if (this.userInput.trim() && !this.isLoading) {
+      const isArabic = /[\u0600-\u06FF]/.test(this.userInput);
+      this.loadingText = isArabic ? 'جاري التفكير...' : 'Thinking...';
+      this.isLoading = true;
       this.chatbotService.sendMessage(this.userInput);
       this.userInput = '';
     }

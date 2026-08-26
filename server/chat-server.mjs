@@ -16,7 +16,7 @@ if (fs.existsSync(envPath)) {
 
 const port = Number(process.env.CHAT_API_PORT || 3001);
 const apiKey = process.env.GEMINI_API_KEY;
-const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const model = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
 
 const server = http.createServer(async (request, response) => {
   if (request.method !== 'POST' || request.url !== '/api/chat') {
@@ -40,7 +40,11 @@ const server = http.createServer(async (request, response) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         systemInstruction: {
-          parts: [{ text: `You are a helpful general-purpose assistant. Answer naturally in the user's language, including Arabic or English. Do not limit yourself to weather. Use this live weather context only when relevant: ${weatherContext}` }],
+          parts: [{ text: `You are a smart weather assistant embedded in the Weather Station application. 
+Your primary role is to answer questions regarding weather conditions, forecasts, clothing advice based on weather, outdoor activity recommendations, and climate concepts.
+Always respond in the exact same language used by the user in their prompt (e.g., respond in Arabic if the query is in Arabic, and English if in English).
+If the user asks about completely unrelated topics (such as coding, history, or general trivia), politely decline in their language and guide them back to weather topics.
+Use this live weather context when relevant: ${weatherContext}` }],
         },
         contents: messages.slice(-12).map((message) => ({
           role: message.role === 'assistant' ? 'model' : 'user',
@@ -51,7 +55,13 @@ const server = http.createServer(async (request, response) => {
     });
     const data = await geminiResponse.json();
     if (!geminiResponse.ok) {
-      sendJson(response, geminiResponse.status, { error: data?.error?.message || 'Gemini request failed.' });
+      if (geminiResponse.status === 429 || data?.error?.message?.includes('quota')) {
+        sendJson(response, 200, { 
+          text: 'المساعد الذكي يستريح ثوانٍ معدودة لكثرة الطلبات، يرجى إعادة المحاولة الآن 🌤️' 
+        });
+        return;
+    }
+    sendJson(response, geminiResponse.status, { error: data?.error?.message || 'Gemini request failed.' });
       return;
     }
     const text = data.candidates?.[0]?.content?.parts?.map((part) => part.text || '').join('') || '';

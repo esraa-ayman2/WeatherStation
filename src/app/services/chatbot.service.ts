@@ -11,7 +11,7 @@ export class ChatbotService {
     {
       id: 'msg-1',
       sender: 'bot',
-      text: 'Hello! I am a general-purpose assistant. Ask me anything in English or Arabic.',
+      text: 'مرحباً بك! أنا مساعدك الذكي للطقس. كيف يمكنني مساعدتك اليوم؟ 🌤️\nHello! I am your smart weather assistant. How can I help you today?',
       timestamp: this.getCurrentTime(),
       isArabic: false,
     },
